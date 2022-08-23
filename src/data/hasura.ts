@@ -1,6 +1,6 @@
 import 'isomorphic-unfetch';
 import { createClient } from '@urql/core';
-import { TUniqueUserId, TWallet } from './index';
+import { TGameUserId, TWallet } from '../index';
 
 const getToken = () => 'NIwLCz3LdTwEj3RWB699OSqQq5EiygrbEUNZev6ZTTHAzhRJkHjo385hVHdzdTvU'; // Temporary
 
@@ -15,10 +15,10 @@ const client = createClient({
 });
 
 const createQuery = `
-  mutation Create($uniqueUserId: String!, $address: String!, $privateKey: String!, $signingKey: json!, $mnemonic: json!) {
+  mutation Create($gameUserId: String!, $address: String!, $privateKey: String!, $signingKey: json!, $mnemonic: json!) {
     insert_user_wallet(
       objects: {
-        uniqueUserId: $uniqueUserId,
+        gameUserId: $gameUserId,
         address: $address,
         privateKey: $privateKey,
         signingKey: $signingKey,
@@ -31,18 +31,18 @@ const createQuery = `
 `;
 
 export const associateUserWithWallet = (
-  uniqueUserId: TUniqueUserId,
+  gameUserId: TGameUserId,
   wallet: TWallet
 ): Promise<any> => {
-  const { address } = wallet;
+  const { address, _signingKey, _mnemonic } = wallet;
 
-  const signingKey = wallet._signingKey();
+  const signingKey = _signingKey();
   const { privateKey } = signingKey;
-  const mnemonic = wallet._mnemonic();
+  const mnemonic = _mnemonic();
 
   return client
     .mutation(createQuery, {
-      uniqueUserId,
+      gameUserId,
       address,
       privateKey,
       signingKey,

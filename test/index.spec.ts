@@ -1,13 +1,11 @@
-import { myPackage } from '../src';
+import NonFungibleFactory from '../src';
 
 describe('index', () => {
-  describe('myPackage', () => {
-    it('should return a string containing the message', () => {
-      const message = 'Hello';
+  describe('main', () => {
+    it('should create a wallet', async () => {
+      const instance = new NonFungibleFactory({ gameDeveloperAccount: '0x0123' });
 
-      const result = myPackage(message);
-
-      expect(result).toMatch(message);
+      await instance.onUserCreated('7771');
     });
   });
 });
